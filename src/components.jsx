@@ -27,8 +27,21 @@ class CardColumn extends React.Component {
           {
             title: 'Cake Homepage HTML/CSS',
             description: 'Code on Code on Code on Code',
-            actions: 'blah'
-          }
+            hasDeleteAction: true,
+            hasCompleteAction: true,
+          },
+          {
+            title: 'Learn React',
+            description: 'Take the first Level of React',
+            hasDeleteAction: true,
+            hasCompleteAction: true,
+          },
+          {
+            title: 'Plan Two Truths and a Lie',
+            description: 'Finish Wireframe, start HTML Layout with some other things...',
+            hasDeleteAction: true,
+            hasCompleteAction: true,
+          },
         ]
       };
     }
