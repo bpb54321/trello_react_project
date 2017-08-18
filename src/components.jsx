@@ -3,13 +3,25 @@ import React from 'react';
 /* Define Card Component Here*/
 class Card extends React.Component {
   render() {
+
+    let deleteButton = '';
+    let completeButton = '';
+
+    if (this.props.hasDeleteAction) {
+      deleteButton = <button className="delete-card">X</button>
+    }
+
+    if (this.props.hasCompleteAction) {
+      completeButton = <button className="complete-card">></button>;
+    }
+
     return (
       <li className="card">
-        <div className="title">Take React Course</div>
-        <div className="description">code on code on code on code...</div>
+        <div className="title">{this.props.title}</div>
+        <div className="description">{this.props.description}</div>
         <div className="actions">
-          <button className="delete-card">X</button>
-          <button className="complete-card">></button>
+          {deleteButton}
+          {completeButton}
         </div>
       </li>
     );
@@ -47,11 +59,18 @@ class CardColumn extends React.Component {
     }
     render() {
         return (
-          <div className="card-column">
-            <Card/>
-            <Card/>
-            <Card/>
-          </div>
+          <ul className="card-column">
+            {
+              this.state.cards.map( (card) => {
+                  return (<Card
+                            title={card.title}
+                            description={card.description}
+                            hasDeleteAction={card.hasDeleteAction}
+                            hasCompleteAction={card.hasCompleteAction}
+                          />);
+              })
+            }
+          </ul>
         );
     }
 }
