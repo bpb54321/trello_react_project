@@ -9,3 +9,7 @@ gulp.task('build', function(){
     .to('bundle.js')
     .pipe(gulp.dest('assets/js'));
 });
+
+gulp.task('watch', function() {
+  gulp.watch('./src/*.jsx', ['build']);
+});
