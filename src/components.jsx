@@ -33,48 +33,26 @@ class CardColumn extends React.Component {
 
     constructor() {
       super();
-
-      this.state = {
-        cards: [
-          {
-            title: 'Cake Homepage HTML/CSS',
-            description: 'Code on Code on Code on Code',
-            hasDeleteAction: true,
-            hasCompleteAction: true,
-            id: 1,
-          },
-          {
-            title: 'Learn React',
-            description: 'Take the first Level of React',
-            hasDeleteAction: true,
-            hasCompleteAction: true,
-            id: 2,
-          },
-          {
-            title: 'Plan Two Truths and a Lie',
-            description: 'Finish Wireframe, start HTML Layout with some other things...',
-            hasDeleteAction: true,
-            hasCompleteAction: true,
-            id: 3,
-          },
-        ]
-      };
     }
+
     render() {
         return (
-          <ul className="card-column">
-            {
-              this.state.cards.map( (card) => {
-                  return (<Card
-                            title={card.title}
-                            description={card.description}
-                            hasDeleteAction={card.hasDeleteAction}
-                            hasCompleteAction={card.hasCompleteAction}
-                            key={card.id}
-                          />);
-              })
-            }
-          </ul>
+          <div id="up-next" class="card-column">
+            <div class="card-column-title">Up Next</div>
+            <ul className="card-list">
+              {
+                this.props.cards.map( (card) => {
+                    return (<Card
+                              title={card.title}
+                              description={card.description}
+                              hasDeleteAction={card.hasDeleteAction}
+                              hasCompleteAction={card.hasCompleteAction}
+                              key={card.id}
+                            />);
+                })
+              }
+            </ul>
+          </div>
         );
     }
 }
