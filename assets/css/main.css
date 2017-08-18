@@ -103,14 +103,13 @@ input:focus {
 
 /* Cards */
 .card {
-    color: #363537;
-
-    width: 96%;
-    background-color: #FAFAFA;
-    border-radius: 5px;
-
-    padding: 2%;
-    margin: auto;
+  background-color: #FAFAFA;
+  border-radius: 5px;
+  color: #363537;
+  list-style: none;
+  margin: auto;
+  padding: 2%;
+  width: 96%;
 }
 
 .card .title {
