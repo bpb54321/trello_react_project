@@ -41,18 +41,21 @@ class CardColumn extends React.Component {
             description: 'Code on Code on Code on Code',
             hasDeleteAction: true,
             hasCompleteAction: true,
+            id: 1,
           },
           {
             title: 'Learn React',
             description: 'Take the first Level of React',
             hasDeleteAction: true,
             hasCompleteAction: true,
+            id: 2,
           },
           {
             title: 'Plan Two Truths and a Lie',
             description: 'Finish Wireframe, start HTML Layout with some other things...',
             hasDeleteAction: true,
             hasCompleteAction: true,
+            id: 3,
           },
         ]
       };
@@ -67,6 +70,7 @@ class CardColumn extends React.Component {
                             description={card.description}
                             hasDeleteAction={card.hasDeleteAction}
                             hasCompleteAction={card.hasCompleteAction}
+                            key={card.id}
                           />);
               })
             }
