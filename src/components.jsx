@@ -15,12 +15,7 @@ export class Sidebar extends React.Component {
   render() {
     return (
       <div id="sidebar">
-        <div id="add-card-form">
-          <div className="form-title">New Card</div>
-          <input id="title-text" type="text" />
-          <input id="description-text" type="text" />
-          <button className="add-card">+</button>
-        </div>
+        <CardForm/>
       </div>
     );
   }
@@ -87,7 +82,12 @@ export class CardForm extends React.Component {
 
   render() {
     return (
-      <div></div>
+      <form id="add-card-form">
+        <div className="form-title">New Card</div>
+        <input id="title-text" type="text" />
+        <input id="description-text" type="text" />
+        <button className="add-card">+</button>
+      </form>
     );
   }
 }
