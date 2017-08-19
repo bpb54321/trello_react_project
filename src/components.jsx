@@ -37,8 +37,8 @@ class CardColumn extends React.Component {
 
     render() {
         return (
-          <div id="up-next" class="card-column">
-            <div class="card-column-title">Up Next</div>
+          <div id="up-next" className="card-column">
+            <div className="card-column-title">Up Next</div>
             <ul className="card-list">
               {
                 this.props.cards.map( (card) => {
