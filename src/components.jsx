@@ -28,6 +28,8 @@ export class Main extends React.Component {
     this.state = {
       columns: [
         {
+          title: 'Up Next',
+          id: 'up-next',
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -51,8 +53,11 @@ export class Main extends React.Component {
               id: 3,
             },
           ],
+          key: 1,
         },
         {
+          title: 'Done',
+          id: 'done',
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -62,6 +67,7 @@ export class Main extends React.Component {
               id: 1,
             },
           ],
+          key: 2,
         },
       ],
     };
@@ -71,8 +77,17 @@ export class Main extends React.Component {
   render () {
     return (
       <div id="main">
-        <CardColumn cards={this.state.columns[0].cards} />
-        <CardColumn cards={this.state.columns[1].cards} />
+        {
+          this.state.columns.map( (column) => {
+            return (
+              <CardColumn
+                id={column.id}
+                title={column.title}
+                cards={column.cards}
+                key={column.key} />
+            );
+          })
+        }
       </div>
     );
   }
@@ -129,8 +144,8 @@ export class CardColumn extends React.Component {
 
     render() {
         return (
-          <div id="up-next" className="card-column">
-            <div className="card-column-title">Up Next</div>
+          <div id={this.props.id} className="card-column">
+            <div className="card-column-title">{this.props.title}</div>
             <ul className="card-list">
               {
                 this.props.cards.map( (card) => {
