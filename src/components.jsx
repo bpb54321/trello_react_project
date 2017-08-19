@@ -95,13 +95,18 @@ export class Main extends React.Component {
 
 export class CardForm extends React.Component {
 
+  _handleSubmit(event) {
+    event.preventDefault();
+    alert('The form has been submitted!');
+  }
+
   render() {
     return (
-      <form id="add-card-form">
+      <form id="add-card-form" onSubmit={this._handleSubmit.bind(this)}>
         <div className="form-title">New Card</div>
         <input id="title-text" type="text" />
         <input id="description-text" type="text" />
-        <button className="add-card">+</button>
+        <button className="add-card" type="submit">+</button>
       </form>
     );
   }
