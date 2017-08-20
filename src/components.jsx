@@ -1,10 +1,15 @@
 import React from 'react';
 
 export class Page extends React.Component {
+
+  _addCard(title, description) {
+    alert('A card has been added!');
+  }
+
   render() {
     return (
       <div id="app">
-        <Sidebar/>
+        <Sidebar addCard={this._addCard.bind(this)}/>
         <Main/>
       </div>
     );
@@ -15,7 +20,7 @@ export class Sidebar extends React.Component {
   render() {
     return (
       <div id="sidebar">
-        <CardForm/>
+        <CardForm addCard={this.props.addCard}/>
       </div>
     );
   }
@@ -97,15 +102,25 @@ export class CardForm extends React.Component {
 
   _handleSubmit(event) {
     event.preventDefault();
-    alert('The form has been submitted!');
+
+    let title = this._title;
+    let description = this._description;
+
+    this.props.addCard(title.value, title.description);
   }
 
   render() {
     return (
       <form id="add-card-form" onSubmit={this._handleSubmit.bind(this)}>
         <div className="form-title">New Card</div>
-        <input id="title-text" type="text" />
-        <input id="description-text" type="text" />
+        <input
+          id="title-text"
+          type="text"
+          ref={ (input) => this._title = input } />
+        <input
+          id="description-text"
+          type="textarea"
+          ref={ (input) => this._description = input } />
         <button className="add-card" type="submit">+</button>
       </form>
     );
