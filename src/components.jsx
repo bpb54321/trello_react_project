@@ -2,31 +2,6 @@ import React from 'react';
 
 export class Page extends React.Component {
 
-  _addCard(title, description) {
-    alert('A card has been added!');
-  }
-
-  render() {
-    return (
-      <div id="app">
-        <Sidebar addCard={this._addCard.bind(this)}/>
-        <Main/>
-      </div>
-    );
-  }
-}
-
-export class Sidebar extends React.Component {
-  render() {
-    return (
-      <div id="sidebar">
-        <CardForm addCard={this.props.addCard}/>
-      </div>
-    );
-  }
-}
-
-export class Main extends React.Component {
   constructor() {
     super();
 
@@ -76,14 +51,57 @@ export class Main extends React.Component {
         },
       ],
     };
+  }
 
+  _addCard(title, description) {
+
+    // Array.prototype.slice(), with no parameters, simply copies the array
+    let cardsCopy = this.state.columns[0].cards.slice();
+    let newCard = {
+        title: title,
+        description: description,
+        hasDeleteAction: true,
+        hasCompleteAction: true,
+        id: cardsCopy.length + 1,
+      };
+    let columnsCopy = this.state.columns.slice();
+
+    cardsCopy.push(newCard);
+    columnsCopy[0].cards = cardsCopy;
+
+    this.setState({columns: columnsCopy});
+  }
+
+  render() {
+    return (
+      <div id="app">
+        <Sidebar addCard={this._addCard.bind(this)}/>
+        <Main columns={this.state.columns}/>
+      </div>
+    );
+  }
+}
+
+export class Sidebar extends React.Component {
+  render() {
+    return (
+      <div id="sidebar">
+        <CardForm addCard={this.props.addCard}/>
+      </div>
+    );
+  }
+}
+
+export class Main extends React.Component {
+  constructor() {
+    super();
   }
 
   render () {
     return (
       <div id="main">
         {
-          this.state.columns.map( (column) => {
+          this.props.columns.map( (column) => {
             return (
               <CardColumn
                 id={column.id}
