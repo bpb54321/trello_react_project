@@ -2,8 +2,12 @@ import React from 'react';
 
 export class Page extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+
+    // The total number of cards that have been created thus far.
+    let cardCount = 4;
 
     this.state = {
       columns: [
@@ -33,7 +37,6 @@ export class Page extends React.Component {
               id: 3,
             },
           ],
-          key: 1,
         },
         {
           title: 'Done',
@@ -44,10 +47,9 @@ export class Page extends React.Component {
               description: 'Code on Code on Code on Code',
               hasDeleteAction: true,
               hasCompleteAction: true,
-              id: 1,
+              id: 4,
             },
           ],
-          key: 2,
         },
       ],
     };
@@ -72,11 +74,19 @@ export class Page extends React.Component {
     this.setState({columns: columnsCopy});
   }
 
+  removeCard(columnIndex, cardId) {
+    let cardsCopy = this.state.columns[columnIndex].cards.slice();
+    let newCards = cardsCopy.filter( (card) => card.id !== cardId );
+    let columnsCopy = this.state.columns.slice();
+    columnsCopy[columnIndex].cards = newCards;
+    this.setState({columns: columnsCopy});
+  }
+
   render() {
     return (
       <div id="app">
         <Sidebar addCard={this._addCard.bind(this)}/>
-        <Main columns={this.state.columns}/>
+        <Main columns={this.state.columns} removeCard={this.removeCard.bind(this)}/>
       </div>
     );
   }
@@ -87,30 +97,6 @@ export class Sidebar extends React.Component {
     return (
       <div id="sidebar">
         <CardForm addCard={this.props.addCard}/>
-      </div>
-    );
-  }
-}
-
-export class Main extends React.Component {
-  constructor() {
-    super();
-  }
-
-  render () {
-    return (
-      <div id="main">
-        {
-          this.props.columns.map( (column) => {
-            return (
-              <CardColumn
-                id={column.id}
-                title={column.title}
-                cards={column.cards}
-                key={column.key} />
-            );
-          })
-        }
       </div>
     );
   }
@@ -145,6 +131,64 @@ export class CardForm extends React.Component {
   }
 }
 
+export class Main extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render () {
+    return (
+      <div id="main">
+        {
+          this.props.columns.map( (column, index, array) => {
+            return (
+              <CardColumn
+                removeCard={this.props.removeCard}
+                id={column.id}
+                title={column.title}
+                cards={column.cards}
+                key={column.id} />
+            );
+          })
+        }
+      </div>
+    );
+  }
+}
+
+
+
+/* Column Component */
+export class CardColumn extends React.Component {
+
+  constructor() {
+    super();
+  }
+
+  render() {
+    return (
+      <div id={this.props.id} className="card-column">
+        <div className="card-column-title">{this.props.title}</div>
+        <ul className="card-list">
+          {
+            this.props.cards.map( (card, index, array) => {
+              return (<Card
+                removeCard={this.props.removeCard}
+                title={card.title}
+                description={card.description}
+                hasDeleteAction={card.hasDeleteAction}
+                hasCompleteAction={card.hasCompleteAction}
+                id={card.id}
+                key={card.id}
+              />);
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+}
+
 /* Define Card Component Here*/
 export class Card extends React.Component {
   render() {
@@ -153,7 +197,7 @@ export class Card extends React.Component {
     let completeButton = '';
 
     if (this.props.hasDeleteAction) {
-      deleteButton = <button className="delete-card">X</button>
+      deleteButton = <button className="delete-card" onClick={() => this.props.removeCard(0, this.props.id)}>X</button>
     }
 
     if (this.props.hasCompleteAction) {
@@ -173,34 +217,5 @@ export class Card extends React.Component {
   }
 }
 
-/* Column Component */
-export class CardColumn extends React.Component {
 
-    constructor() {
-      super();
-    }
 
-    render() {
-        return (
-          <div id={this.props.id} className="card-column">
-            <div className="card-column-title">{this.props.title}</div>
-            <ul className="card-list">
-              {
-                this.props.cards.map( (card) => {
-                    return (<Card
-                              title={card.title}
-                              description={card.description}
-                              hasDeleteAction={card.hasDeleteAction}
-                              hasCompleteAction={card.hasCompleteAction}
-                              key={card.id}
-                            />);
-                })
-              }
-            </ul>
-          </div>
-        );
-    }
-}
-
-// I want each Card Column to display an array of cards.
-// To do this, I should create a state array in CardColumn which contains an array of Card objects.
