@@ -106,9 +106,16 @@ export class Sidebar extends React.Component {
 
 export class CardForm extends React.Component {
 
+  constructor() {
+    super();
+  }
+
+
   _handleSubmit(event) {
     event.preventDefault();
     this.props.addCard(this.title.value, this.description.value);
+    this.title.value = '';
+    this.description.value = '';
   }
 
   render() {
@@ -118,11 +125,11 @@ export class CardForm extends React.Component {
         <input
           id="title-text"
           type="text"
-          ref={ (input) => this.title = input } />
+          ref={ input => this.title = input } />
         <input
           id="description-text"
           type="textarea"
-          ref={ (input) => this.description = input } />
+          ref={ input => this.description = input } />
         <button className="add-card" type="submit">+</button>
       </form>
     );
