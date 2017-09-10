@@ -7,7 +7,7 @@ export class Page extends React.Component {
 
 
     // The total number of cards that have been created thus far.
-    let cardCount = 4;
+    this.cardCount = 4;
 
     this.state = {
       columns: [
@@ -58,18 +58,20 @@ export class Page extends React.Component {
   _addCard(title, description) {
 
     // Array.prototype.slice(), with no parameters, simply copies the array
-    let cardsCopy = this.state.columns[0].cards.slice();
+    let columnsCopy = this.state.columns.slice();
+    // Should actually contain a reference to columnsCopy[0]
+    let upNextColumn = columnsCopy[0];
     let newCard = {
         title: title,
         description: description,
         hasDeleteAction: true,
         hasCompleteAction: true,
-        id: cardsCopy.length + 1,
+        id: this.cardCount + 1,
       };
-    let columnsCopy = this.state.columns.slice();
 
-    cardsCopy.push(newCard);
-    columnsCopy[0].cards = cardsCopy;
+    upNextColumn.cards.push( newCard );
+
+    this.cardCount++;
 
     this.setState({columns: columnsCopy});
   }
@@ -106,11 +108,7 @@ export class CardForm extends React.Component {
 
   _handleSubmit(event) {
     event.preventDefault();
-
-    let title = this._title;
-    let description = this._description;
-
-    this.props.addCard(title.value, title.description);
+    this.props.addCard(this.title.value, this.description.value);
   }
 
   render() {
@@ -120,11 +118,11 @@ export class CardForm extends React.Component {
         <input
           id="title-text"
           type="text"
-          ref={ (input) => this._title = input } />
+          ref={ (input) => this.title = input } />
         <input
           id="description-text"
           type="textarea"
-          ref={ (input) => this._description = input } />
+          ref={ (input) => this.description = input } />
         <button className="add-card" type="submit">+</button>
       </form>
     );
