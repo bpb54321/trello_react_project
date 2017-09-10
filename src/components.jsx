@@ -77,10 +77,13 @@ export class Page extends React.Component {
   }
 
   removeCard(columnIndex, cardId) {
-    let cardsCopy = this.state.columns[columnIndex].cards.slice();
-    let newCards = cardsCopy.filter( (card) => card.id !== cardId );
     let columnsCopy = this.state.columns.slice();
-    columnsCopy[columnIndex].cards = newCards;
+    let selectedColumn = columnsCopy[columnIndex];
+    let selectedCards = selectedColumn.cards;
+    // Array.filter: runs a callback on each element and returns a new array
+    // If callback returns true for element, it is kept, if false, is filtered out
+    let cardsAfterRemoval = selectedCards.filter( (card) => card.id !== cardId );
+    selectedColumn.cards = cardsAfterRemoval;
     this.setState({columns: columnsCopy});
   }
 
@@ -149,7 +152,7 @@ export class Main extends React.Component {
     return (
       <div id="main">
         {
-          this.props.columns.map( (column, index, array) => {
+          this.props.columns.map( column => {
             return (
               <CardColumn
                 removeCard={this.props.removeCard}
@@ -170,7 +173,7 @@ export class Main extends React.Component {
 /* Column Component */
 export class CardColumn extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super();
   }
 
@@ -180,16 +183,17 @@ export class CardColumn extends React.Component {
         <div className="card-column-title">{this.props.title}</div>
         <ul className="card-list">
           {
-            this.props.cards.map( (card, index, array) => {
-              return (<Card
-                removeCard={this.props.removeCard}
-                title={card.title}
-                description={card.description}
-                hasDeleteAction={card.hasDeleteAction}
-                hasCompleteAction={card.hasCompleteAction}
-                id={card.id}
-                key={card.id}
-              />);
+            this.props.cards.map( card => {
+              return (
+                <Card
+                  removeCard={this.props.removeCard}
+                  title={card.title}
+                  description={card.description}
+                  hasDeleteAction={card.hasDeleteAction}
+                  hasCompleteAction={card.hasCompleteAction}
+                  id={card.id}
+                  key={card.id}
+                />);
             })
           }
         </ul>
