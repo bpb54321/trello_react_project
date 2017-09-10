@@ -122,10 +122,14 @@ export class CardForm extends React.Component {
     return (
       <form id="add-card-form" onSubmit={this._handleSubmit.bind(this)}>
         <div className="form-title">New Card</div>
+        <label htmlFor="title-text">Title</label>
         <input
           id="title-text"
           type="text"
-          ref={ input => this.title = input } />
+          ref={ input => this.title = input }
+          required
+        />
+        <label htmlFor="description-text">Description Text</label>
         <input
           id="description-text"
           type="textarea"
