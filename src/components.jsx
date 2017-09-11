@@ -14,6 +14,7 @@ export class Page extends React.Component {
         {
           title: 'Up Next',
           id: 'up-next',
+          index: 0,
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -41,6 +42,7 @@ export class Page extends React.Component {
         {
           title: 'Done',
           id: 'done',
+          index: 1,
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -157,6 +159,7 @@ export class Main extends React.Component {
               <CardColumn
                 removeCard={this.props.removeCard}
                 id={column.id}
+                index={column.index}
                 title={column.title}
                 cards={column.cards}
                 key={column.id} />
@@ -187,6 +190,7 @@ export class CardColumn extends React.Component {
               return (
                 <Card
                   removeCard={this.props.removeCard}
+                  columnIndex={this.props.index}
                   title={card.title}
                   description={card.description}
                   hasDeleteAction={card.hasDeleteAction}
@@ -210,7 +214,7 @@ export class Card extends React.Component {
     let completeButton = '';
 
     if (this.props.hasDeleteAction) {
-      deleteButton = <button className="delete-card" onClick={() => this.props.removeCard(0, this.props.id)}>X</button>
+      deleteButton = <button className="delete-card" onClick={() => this.props.removeCard(this.props.columnIndex, this.props.id)}>X</button>
     }
 
     if (this.props.hasCompleteAction) {
