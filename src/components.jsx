@@ -7,13 +7,14 @@ export class Page extends React.Component {
 
 
     // The total number of cards that have been created thus far.
-    let cardCount = 4;
+    this.cardCount = 4;
 
     this.state = {
       columns: [
         {
           title: 'Up Next',
           id: 'up-next',
+          index: 0,
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -41,6 +42,7 @@ export class Page extends React.Component {
         {
           title: 'Done',
           id: 'done',
+          index: 1,
           cards: [
             {
               title: 'Cake Homepage HTML/CSS',
@@ -58,27 +60,32 @@ export class Page extends React.Component {
   _addCard(title, description) {
 
     // Array.prototype.slice(), with no parameters, simply copies the array
-    let cardsCopy = this.state.columns[0].cards.slice();
+    let columnsCopy = this.state.columns.slice();
+    // Should actually contain a reference to columnsCopy[0]
+    let upNextColumn = columnsCopy[0];
     let newCard = {
         title: title,
         description: description,
         hasDeleteAction: true,
         hasCompleteAction: true,
-        id: cardsCopy.length + 1,
+        id: this.cardCount + 1,
       };
-    let columnsCopy = this.state.columns.slice();
 
-    cardsCopy.push(newCard);
-    columnsCopy[0].cards = cardsCopy;
+    upNextColumn.cards.push( newCard );
+
+    this.cardCount++;
 
     this.setState({columns: columnsCopy});
   }
 
   removeCard(columnIndex, cardId) {
-    let cardsCopy = this.state.columns[columnIndex].cards.slice();
-    let newCards = cardsCopy.filter( (card) => card.id !== cardId );
     let columnsCopy = this.state.columns.slice();
-    columnsCopy[columnIndex].cards = newCards;
+    let selectedColumn = columnsCopy[columnIndex];
+    let selectedCards = selectedColumn.cards;
+    // Array.filter: runs a callback on each element and returns a new array
+    // If callback returns true for element, it is kept, if false, is filtered out
+    let cardsAfterRemoval = selectedCards.filter( (card) => card.id !== cardId );
+    selectedColumn.cards = cardsAfterRemoval;
     this.setState({columns: columnsCopy});
   }
 
@@ -104,27 +111,34 @@ export class Sidebar extends React.Component {
 
 export class CardForm extends React.Component {
 
+  constructor() {
+    super();
+  }
+
+
   _handleSubmit(event) {
     event.preventDefault();
-
-    let title = this._title;
-    let description = this._description;
-
-    this.props.addCard(title.value, title.description);
+    this.props.addCard(this.title.value, this.description.value);
+    this.title.value = '';
+    this.description.value = '';
   }
 
   render() {
     return (
       <form id="add-card-form" onSubmit={this._handleSubmit.bind(this)}>
         <div className="form-title">New Card</div>
+        <label htmlFor="title-text">Title</label>
         <input
           id="title-text"
           type="text"
-          ref={ (input) => this._title = input } />
+          ref={ input => this.title = input }
+          required
+        />
+        <label htmlFor="description-text">Description Text</label>
         <input
           id="description-text"
           type="textarea"
-          ref={ (input) => this._description = input } />
+          ref={ input => this.description = input } />
         <button className="add-card" type="submit">+</button>
       </form>
     );
@@ -140,11 +154,12 @@ export class Main extends React.Component {
     return (
       <div id="main">
         {
-          this.props.columns.map( (column, index, array) => {
+          this.props.columns.map( column => {
             return (
               <CardColumn
                 removeCard={this.props.removeCard}
                 id={column.id}
+                index={column.index}
                 title={column.title}
                 cards={column.cards}
                 key={column.id} />
@@ -161,7 +176,7 @@ export class Main extends React.Component {
 /* Column Component */
 export class CardColumn extends React.Component {
 
-  constructor() {
+  constructor(props) {
     super();
   }
 
@@ -171,16 +186,18 @@ export class CardColumn extends React.Component {
         <div className="card-column-title">{this.props.title}</div>
         <ul className="card-list">
           {
-            this.props.cards.map( (card, index, array) => {
-              return (<Card
-                removeCard={this.props.removeCard}
-                title={card.title}
-                description={card.description}
-                hasDeleteAction={card.hasDeleteAction}
-                hasCompleteAction={card.hasCompleteAction}
-                id={card.id}
-                key={card.id}
-              />);
+            this.props.cards.map( card => {
+              return (
+                <Card
+                  removeCard={this.props.removeCard}
+                  columnIndex={this.props.index}
+                  title={card.title}
+                  description={card.description}
+                  hasDeleteAction={card.hasDeleteAction}
+                  hasCompleteAction={card.hasCompleteAction}
+                  id={card.id}
+                  key={card.id}
+                />);
             })
           }
         </ul>
@@ -197,7 +214,7 @@ export class Card extends React.Component {
     let completeButton = '';
 
     if (this.props.hasDeleteAction) {
-      deleteButton = <button className="delete-card" onClick={() => this.props.removeCard(0, this.props.id)}>X</button>
+      deleteButton = <button className="delete-card" onClick={() => this.props.removeCard(this.props.columnIndex, this.props.id)}>X</button>
     }
 
     if (this.props.hasCompleteAction) {
