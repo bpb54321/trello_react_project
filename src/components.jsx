@@ -48,7 +48,7 @@ export class Page extends React.Component {
               title: 'Cake Homepage HTML/CSS',
               description: 'Code on Code on Code on Code',
               hasDeleteAction: true,
-              hasCompleteAction: true,
+              hasCompleteAction: false,
               id: 4,
             },
           ],
@@ -116,6 +116,9 @@ export class Page extends React.Component {
 
     // Remove from the wrapper array
     selectedCard = selectedCard[0];
+
+    // Remove the ability to be completed
+    selectedCard.hasCompleteAction = false;
 
     // Remove the card from column 0 (Up Next Column)
     this._removeCardFromColumn(columnsCopy, 0, cardId);
