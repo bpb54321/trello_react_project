@@ -78,22 +78,64 @@ export class Page extends React.Component {
     this.setState({columns: columnsCopy});
   }
 
-  removeCard(columnIndex, cardId) {
-    let columnsCopy = this.state.columns.slice();
-    let selectedColumn = columnsCopy[columnIndex];
+  /**
+   * Given an array of columns, with each column containing an array of cards,
+   * modifies the original array of columns by removing the card with cardId
+   * from the column at columnIndex.
+   */
+  _removeCardFromColumn(columns, columnIndex, cardId) {
+    let selectedColumn = columns[columnIndex];
     let selectedCards = selectedColumn.cards;
-    // Array.filter: runs a callback on each element and returns a new array
-    // If callback returns true for element, it is kept, if false, is filtered out
+    /*
+     * Array.filter: runs a callback on each element and returns a new array.
+     * If callback returns true for element, it is kept, if false, is filtered out.
+     */
     let cardsAfterRemoval = selectedCards.filter( (card) => card.id !== cardId );
     selectedColumn.cards = cardsAfterRemoval;
+  }
+
+  removeCard(columnIndex, cardId) {
+    // Copy the current state, since React requires setting the new state
+    // without referencing the old state object
+    let columnsCopy = this.state.columns.slice();
+    this._removeCardFromColumn(columnsCopy, columnIndex, cardId);
     this.setState({columns: columnsCopy});
+  }
+
+  /**
+   * Deletes a card from the Up Next column and adds it to the Done column.
+   */
+  completeCard(cardId) {
+    // We need to add this as a method to a card
+    // First, we need to find the card
+    // Use the columnIndex and cardId from the removeCard method
+    let columnsCopy = this.state.columns.slice();
+
+    // Copy the card that we need to move over
+    let selectedCard = columnsCopy[0].cards.filter( (card) => card.id === cardId );
+
+    // Remove from the wrapper array
+    selectedCard = selectedCard[0];
+
+    // Remove the card from column 0 (Up Next Column)
+    this._removeCardFromColumn(columnsCopy, 0, cardId);
+
+    // Add the card to column 1 (Done Column)
+    columnsCopy[1].cards.push(selectedCard);
+
+    this.setState({columns: columnsCopy});
+
   }
 
   render() {
     return (
       <div id="app">
         <Sidebar addCard={this._addCard.bind(this)}/>
-        <Main columns={this.state.columns} removeCard={this.removeCard.bind(this)}/>
+        <Main
+          columns={this.state.columns}
+          removeCard={this.removeCard.bind(this)}
+          completeCard={this.completeCard.bind(this)}
+        />
       </div>
     );
   }
@@ -158,6 +200,7 @@ export class Main extends React.Component {
             return (
               <CardColumn
                 removeCard={this.props.removeCard}
+                completeCard={this.props.completeCard}
                 id={column.id}
                 index={column.index}
                 title={column.title}
@@ -190,6 +233,7 @@ export class CardColumn extends React.Component {
               return (
                 <Card
                   removeCard={this.props.removeCard}
+                  completeCard={this.props.completeCard}
                   columnIndex={this.props.index}
                   title={card.title}
                   description={card.description}
@@ -218,7 +262,9 @@ export class Card extends React.Component {
     }
 
     if (this.props.hasCompleteAction) {
-      completeButton = <button className="complete-card">></button>;
+      completeButton = <button
+                        className="complete-card"
+                        onClick={ () => {this.props.completeCard(this.props.id)} }>></button>;
     }
 
     return (
