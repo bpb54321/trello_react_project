@@ -78,15 +78,43 @@ export class Page extends React.Component {
     this.setState({columns: columnsCopy});
   }
 
-  removeCard(columnIndex, cardId) {
-    let columnsCopy = this.state.columns.slice();
-    let selectedColumn = columnsCopy[columnIndex];
+  /**
+   * Given an array of columns, with each column containing an array of cards,
+   * modifies the original array of columns by removing the card with cardId
+   * from the column at columnIndex.
+   */
+  _removeCardFromColumn(columns, columnIndex, cardId) {
+    let selectedColumn = columns[columnIndex];
     let selectedCards = selectedColumn.cards;
-    // Array.filter: runs a callback on each element and returns a new array
-    // If callback returns true for element, it is kept, if false, is filtered out
+    /*
+     * Array.filter: runs a callback on each element and returns a new array.
+     * If callback returns true for element, it is kept, if false, is filtered out.
+     */
     let cardsAfterRemoval = selectedCards.filter( (card) => card.id !== cardId );
     selectedColumn.cards = cardsAfterRemoval;
+  }
+
+  removeCard(columnIndex, cardId) {
+    // Copy the current state, since React requires setting the new state
+    // without referencing the old state object
+    let columnsCopy = this.state.columns.slice();
+    this._removeCardFromColumn(columnsCopy, columnIndex, cardId);
     this.setState({columns: columnsCopy});
+  }
+
+  /**
+   * GIVEN the user has a card in the Up Next column
+   * WHEN the user clicks the green arrow on a card in the Up Next column
+   * THEN the card should move to the Done column.
+   */
+  completeTask(cardId) {
+    // We need to add this as a method to a card
+    // First, we need to find the card
+    // Use the columnIndex and cardId from the removeCard method
+    let columnsCopy = this.state.columns.slice();
+
+    // Remove the card from column 0 (
+
   }
 
   render() {
