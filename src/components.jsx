@@ -103,17 +103,27 @@ export class Page extends React.Component {
   }
 
   /**
-   * GIVEN the user has a card in the Up Next column
-   * WHEN the user clicks the green arrow on a card in the Up Next column
-   * THEN the card should move to the Done column.
+   * Deletes a card from the Up Next column and adds it to the Done column.
    */
-  completeTask(cardId) {
+  completeCard(cardId) {
     // We need to add this as a method to a card
     // First, we need to find the card
     // Use the columnIndex and cardId from the removeCard method
     let columnsCopy = this.state.columns.slice();
 
-    // Remove the card from column 0 (
+    // Copy the card that we need to move over
+    let selectedCard = columnsCopy[0].cards.filter( (card) => card.id === cardId );
+
+    // Remove from the wrapper array
+    selectedCard = selectedCard[0];
+
+    // Remove the card from column 0 (Up Next Column)
+    this._removeCardFromColumn(columnsCopy, 0, cardId);
+
+    // Add the card to column 1 (Done Column)
+    columnsCopy[1].cards.push(selectedCard);
+
+    this.setState({columns: columnsCopy});
 
   }
 
@@ -121,7 +131,11 @@ export class Page extends React.Component {
     return (
       <div id="app">
         <Sidebar addCard={this._addCard.bind(this)}/>
-        <Main columns={this.state.columns} removeCard={this.removeCard.bind(this)}/>
+        <Main
+          columns={this.state.columns}
+          removeCard={this.removeCard.bind(this)}
+          completeCard={this.completeCard.bind(this)}
+        />
       </div>
     );
   }
@@ -186,6 +200,7 @@ export class Main extends React.Component {
             return (
               <CardColumn
                 removeCard={this.props.removeCard}
+                completeCard={this.props.completeCard}
                 id={column.id}
                 index={column.index}
                 title={column.title}
@@ -218,6 +233,7 @@ export class CardColumn extends React.Component {
               return (
                 <Card
                   removeCard={this.props.removeCard}
+                  completeCard={this.props.completeCard}
                   columnIndex={this.props.index}
                   title={card.title}
                   description={card.description}
@@ -246,7 +262,9 @@ export class Card extends React.Component {
     }
 
     if (this.props.hasCompleteAction) {
-      completeButton = <button className="complete-card">></button>;
+      completeButton = <button
+                        className="complete-card"
+                        onClick={ () => {this.props.completeCard(this.props.id)} }>></button>;
     }
 
     return (
